@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO" packages="oneplay.office4j">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%F, line %L] - %msg%n"/>
+        </Console>
+        <Routing name="Routing">
+            <Routes pattern="$${Log4j2ThreadLookUp:threadName}">
+                <Route>
+                    <RollingFile name="${Log4j2ThreadLookUp:threadName}"
+                                 fileName="log/${Log4j2ThreadLookUp:threadName}.log"
+                                 filePattern="log/${Log4j2ThreadLookUp:threadName}-%d{yyyyMMdd}-%i.log">
+                        <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%F, line %L] - %msg%n"/>
+                        <Policies>
+                            <SizeBasedTriggeringPolicy size="8 MB"/>
+                        </Policies>
+                    </RollingFile>
+                </Route>
+            </Routes>
+        </Routing>
+        <Async name="async" bufferSize="1000" includeLocation="true">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="Routing"/>
+        </Async>
+        <File name="Docx4j" fileName="log/docx4j.log" >
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p [%F, line %L] %C - %msg%n"/>
+        </File>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="async"/>
+        </Root>
+        <!--  docx4j loggers -->
+        <!--<Logger name="org.docx4j" level="warn" additivity="false"/>-->
+        <Logger name="org.docx4j" level="warn">
+            <AppenderRef ref="Docx4j"/>
+        </Logger>
+        <Logger name="org.docx4j.utils.XSLTUtils" level="error">
+            <AppenderRef ref="Docx4j"/>
+        </Logger>
+        <Logger name="org.docx4j.jaxb.JaxbValidationEventHandler" level="error">
+            <AppenderRef ref="Docx4j"/>
+        </Logger>
+        <Logger name="org.docx4j.TraversalUtil" level="error">
+            <AppenderRef ref="Docx4j"/>
+        </Logger>
+        <Logger name="org.docx4j.openpackaging" level="error">
+            <AppenderRef ref="Docx4j"/>
+        </Logger>
+    </Loggers>
+</Configuration>
